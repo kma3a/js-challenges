@@ -11,7 +11,6 @@ class Card {
 class Deck {
   constructor() {
     this.cards = [];
-    
   }
   addCard(card) {
     this.cards.push(card);
@@ -35,12 +34,28 @@ class Deck {
       this.cards[index] = tempCard;
     };
   }
+  getTopCard() {
+   return this.cards.shift();
+  }
 }
 
 function randomNumber(min, max) {
   return  Math.ceil(Math.random() * (max - min) + min);
 }
 
+class Player {
+  constructor() {
+    this.hand = [];
+  }
+  getCard(card) {
+    this.hand.push(card);
+  }
+  readHand() {
+    this.hand.forEach(function(card) {
+      console.log(card.print());
+    });
+  }
+}
 
 let suites = ["Hearts", "Diamonds", "Spades", "Clubs"];
 let numbers = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"];
@@ -53,6 +68,39 @@ suites.forEach(function(suite) {
   });
 });
 
-newDeck.shuffleCards();
-newDeck.readCards();
+var numCards = 5;
+var numPlayers = 5;
+
+function dealCards(amountOfCards, amountOfPlayers) {
+  newDeck.shuffleCards();
+  var players = createPlayers(amountOfPlayers);
+  while(amountOfCards > 0) {
+    for( var index = 0; index < amountOfPlayers; index++) {
+      var card = newDeck.getTopCard();
+      players[index].getCard(card);
+    };
+    amountOfCards--;
+  }
+
+  readCards(players);
+}
+
+ function createPlayers(amountOfPlayers){
+  var players = [];
+  while(players.length < amountOfPlayers) {
+    players.push(new Player());
+  }
+  return players;
+}
+
+function readCards(players) {
+  players.forEach(function(player, index) {
+    var playerNumber = index + 1;
+    console.log("Player " + playerNumber);
+    player.readHand();
+  });
+}
+ 
+dealCards(numCards, numPlayers);
+
 
