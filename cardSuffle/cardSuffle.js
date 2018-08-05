@@ -22,8 +22,23 @@ class Deck {
     });
   }
   shuffleCards() {
-
+    for(let index = 0; index < this.cards.length; index++) {
+      var card = this.cards[index];
+      var randIndex;
+      if(index !== this.cards.length-1) {
+        randIndex = randomNumber(index + 1, this.cards.length-1);
+      } else {
+        randIndex = randomNumber(0, index-1);
+      }
+      var tempCard = this.cards[randIndex];
+      this.cards[randIndex] = card;
+      this.cards[index] = tempCard;
+    };
   }
+}
+
+function randomNumber(min, max) {
+  return  Math.ceil(Math.random() * (max - min) + min);
 }
 
 
@@ -38,5 +53,6 @@ suites.forEach(function(suite) {
   });
 });
 
+newDeck.shuffleCards();
 newDeck.readCards();
 
