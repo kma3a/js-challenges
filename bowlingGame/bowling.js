@@ -18,7 +18,7 @@ class BowlingGame {
       }
     }
     if(!this.game[this.round]){
-      this.game[this.round] = new Frame(this.round);
+      this.game[this.round] = new Frame(this.round, this.round === 9);
       this.game[this.round].addPins(num);
       if(num === 10 && this.round < 9) {
         this.round++;
@@ -53,24 +53,41 @@ class Frame {
     this.needsMorePins = isLast ? 3 : 2;
     this.addPinsToTotal = 0;
     this.finished = false;
+    this.hasStrike = false;
+    this.hasSpare = false;
+  }
+  checkStrike() {
+    return this.hasStrike = this.hasStrike || (this.pins.length === 0 && this.total === 10);
+  }
+  checkSpare() {
+    return this.hasSpare = this.hasSpare || (!this.hasStrike && this.pins.length === 1 && this.total === 10);
   }
   addPins(pins) {
+    if(!this.needsMorePins) {
+      return;
+    }
+    if(this.pins.length === 2 && this.needsMorePins > 0 && !(this.hasStrike || this.hasSpare)){
+      pins = 0;
+    }
     this.total += pins
-    if(this.pins.length === 0 && pins === 10) {
+    if(this.checkStrike()) {
       if(this.round < 10) {
         this.addPinsToTotal = 2;
         this.pins = [10, 0];
+        this.needsMorePins = 0;
       }
       if(this.round === 10) {
-        this.pins.push(10);
+        this.pins.push(pins);
+        this.needsMorePins--;
       }
+      this.checkFinished();
       return;
     }
-    this.needsMorePins--;
-    this.pins[this.pins.length] = pins;
-    if(this.pins.length === 2 && this.total === 10) {
-      this.needsMorePins = 1;
+    if(this.checkSpare()) {
+      this.addPinsToTotal = 1;
     }
+    this.pins.push(pins);
+    this.needsMorePins--;
     this.checkFinished();
   }
   printFrame() {
@@ -104,34 +121,18 @@ class Frame {
 
 var currentGame = new BowlingGame();
 //roundd 1
-currentGame.addPins(2);
-currentGame.addPins(3);
+currentGame.addPins(10);
+currentGame.addPins(10);
+currentGame.addPins(10);
+currentGame.addPins(10);
+currentGame.addPins(10);
+currentGame.addPins(10);
+currentGame.addPins(10);
+currentGame.addPins(10);
+currentGame.addPins(10);
+currentGame.addPins(10);
+currentGame.addPins(10);
+currentGame.addPins(10);
+currentGame.addPins(10);
 //round 2 
-currentGame.addPins(10);
-//round 3
-currentGame.addPins(6);
-currentGame.addPins(4);
-//round 4
-currentGame.addPins(10);
-//round 5
-currentGame.addPins(10);
-//round 26
-currentGame.addPins(5);
-currentGame.addPins(4);
-//round 7
-currentGame.addPins(6);
-currentGame.addPins(2);
-//round 8
-currentGame.addPins(8);
-currentGame.addPins(1);
-//round 9
-currentGame.addPins(4);
-currentGame.addPins(2);
-//round 10
-
-currentGame.addPins(10);
-currentGame.addPins(4);
-currentGame.addPins(4);
-currentGame.addPins(4);
-
 currentGame.showGame();
